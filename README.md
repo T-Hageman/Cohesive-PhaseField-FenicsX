@@ -9,10 +9,12 @@ Research code accompanying the paper:
 This repository provides an open implementation of a cohesive phase-field fracture model built in **FEniCSx / dolfinx**. It is intended to help researchers inspect the formulation, reproduce the benchmark studies from the manuscript, and adapt the implementation for related fracture mechanics problems.
 
 <p align="center">
-  <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching phase field" width="72%"/>
+  <img src="DOWN_Gc100000_u_y.jpg" alt="Plate with hole compression vertical displacement" width="32%"/>
+  <img src="DOWN_Gc100000_phasefield.jpg" alt="Plate with hole compression phase field" width="32%"/>
+  <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching phase field" width="32%"/>
 </p>
 
-Dynamic crack branching in a single-edge notched plate under sudden traction. This benchmark highlights the model's ability to capture rapid crack growth and branching in a dynamic setting.
+Top row, left to right: vertical displacement and phase-field for the plate-with-hole compression benchmark, followed by dynamic crack branching in a single-edge notched plate under sudden traction.
 
 ## Why This Repository Is Useful
 
