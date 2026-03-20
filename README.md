@@ -8,6 +8,12 @@ Research code accompanying the paper:
 
 This repository provides an open implementation of a cohesive phase-field fracture model built in **FEniCSx / dolfinx**. It is intended to help researchers inspect the formulation, reproduce the benchmark studies from the manuscript, and adapt the implementation for related fracture mechanics problems.
 
+<p align="center">
+  <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching phase field" width="72%"/>
+</p>
+
+Dynamic crack branching in a single-edge notched plate under sudden traction. This benchmark highlights the model's ability to capture rapid crack growth and branching in a dynamic setting.
+
 ## Why This Repository Is Useful
 
 - Implements a cohesive phase-field fracture formulation with an **explicit strength surface**
@@ -102,6 +108,20 @@ Available post-processing helpers include:
 - `PostProcessAnimations.m`
 - `PlotFailSurfaces.m`
 - `distinguishable_colors.m`
+
+A minimal Python example:
+
+```python
+import h5py
+import matplotlib.pyplot as plt
+
+with h5py.File("Results/Outputs_1.hdf5", "r") as f:
+    u_x = f["u_x"][:]
+
+plt.plot(u_x)
+plt.title("Displacement field")
+plt.show()
+```
 
 ## Representative Results
 
