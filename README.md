@@ -1,151 +1,146 @@
-
-
 # Cohesive Phase-Field Fracture in FEniCSx
+
 ![MIT License](https://img.shields.io/badge/license-MIT-green.svg)
-<!-- If you have a DOI, add it here. Example: ![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg) -->
 
-## Why use this code?
+Research code accompanying the paper:
 
-- Implements a robust, mesh-independent cohesive phase-field fracture model
-- Explicit, tunable strength surface and return-mapping formulation
-- Open-source, reproducible, and well-documented
-- Validated on standard benchmarks (tension, shear, dynamic fracture)
-- Ready for extension and integration with FEniCSx workflows
+> Tim Hageman, *Cohesive phase-field fracture with an explicit strength surface: an eigenstrain-based return-mapping formulation*.
+
+This repository provides an open implementation of a cohesive phase-field fracture model built in **FEniCSx / dolfinx**. It is intended to help researchers inspect the formulation, reproduce the benchmark studies from the manuscript, and adapt the implementation for related fracture mechanics problems.
+
+## Why This Repository Is Useful
+
+- Implements a cohesive phase-field fracture formulation with an **explicit strength surface**
+- Uses an **eigenstrain-based return-mapping update** at quadrature points
+- Covers both **quasi-static** and **dynamic** benchmark problems
+- Produces reproducible results for the study discussed in the paper
+- Provides a compact FEniCSx code base that is easier to inspect and extend than many large research frameworks
+
+## What Is In The Repository
+
+The code couples:
+
+- a `dolfinx` finite-element implementation of phase-field fracture,
+- cohesive constitutive updates in the solid response,
+- staggered solution of displacement and phase-field variables, and
+- benchmark drivers used to generate the representative results in the manuscript.
+
+The benchmark set includes:
+
+- a plate with a hole under tension/compression,
+- a single-edge notched plate under shear, and
+- a dynamically loaded notched plate with crack branching.
+
+## Project Structure
+
+- `Main.py`: runs a single simulation using the default setup defined in `Params.py`
+- `Params.py`: default mesh, material, loading, solver, and output settings
+- `Do_Sweep.py`: reproduces the benchmark families used in the paper
+- `Mesh/`: mesh generation, groups, FE spaces, and output utilities
+- `Models/`: constitutive models and boundary-condition models
+- `Physics/`: coupled problem definitions and assembly logic
+- `Solvers/`: time stepping and linear solver orchestration
+- `Utils/`: MPI helpers and mathematical utilities
+- `PlotFailSurfaces.m`, `PostProcessAnimations.m`: MATLAB post-processing scripts
+
 ## Installation
 
-This code requires Python 3.10+ and an MPI-enabled environment. The main dependencies are:
+This project requires Python 3.10+ together with an MPI-enabled FEniCSx environment.
 
-- dolfinx
-- petsc4py
-- mpi4py
-- gmsh
-- numba
+Main dependencies:
 
-**Recommended (using conda):**
+- `dolfinx`
+- `petsc4py`
+- `mpi4py`
+- `gmsh`
+- `numba`
+- `threadpoolctl`
+
+A conda-based setup is usually the most reliable route:
 
 ```bash
 conda create -n fenicsx-cohesive python=3.10
 conda activate fenicsx-cohesive
-conda install -c conda-forge fenics-dolfinx petsc4py mpi4py gmsh numba
+conda install -c conda-forge fenics-dolfinx petsc4py mpi4py gmsh numba threadpoolctl
 ```
 
-Or, using pip (ensure you have a working MPI installation):
+If you already have a working FEniCSx + MPI installation, installing the missing Python packages into that environment is also fine.
 
-```bash
-python -m pip install --upgrade pip
-python -m pip install dolfinx petsc4py mpi4py gmsh numba
-```
+For general FEniCSx installation guidance, see the official documentation:
+<https://docs.fenicsproject.org/dolfinx/main/python/installation.html>
 
-For more details, see the [FEniCSx installation guide](https://docs.fenicsproject.org/dolfinx/main/python/installation.html).
 ## Quick Start
 
-Run a default simulation (using 50 MPI processes):
+Run the default simulation:
 
 ```bash
 export OMP_NUM_THREADS=1
 mpirun -np 50 python3 Main.py
 ```
 
-This will generate output files in the `Results/` directory (e.g., `Outputs_*.hdf5`).
+The default case is a **plate with a hole** using parameters from `Params.py`. Results are written to `Results/` in HDF5 format.
 
-To run all benchmark cases (warning: this is computationally intensive):
+To explore a different setup, edit `Params.py` and rerun `Main.py`.
+
+## Reproducing The Paper Benchmarks
+
+The repository also includes a benchmark sweep driver:
 
 ```bash
 export OMP_NUM_THREADS=1
 python3 Do_Sweep.py
 ```
 
-You can also run individual cases by editing `Params.py` or passing arguments to `Do_Sweep.py`.
-## Results Visualization
+This script is primarily provided for reproducibility. It can be computationally expensive, especially for the dynamic cases and parameter sweeps.
 
-The code outputs results in HDF5 format in the `Results/` directory. To visualize fields (e.g., displacement, phase-field):
+## Output And Visualisation
 
-- Use the provided MATLAB scripts (e.g., `PlotFailSurfaces.m`, `PostProcessAnimations.m`)
-- Or, use Python with `h5py` and `matplotlib` to read and plot the data
+Simulation outputs are written to `Results/`, typically as `Outputs_*.hdf5` files. You can inspect them using your own Python workflow or the MATLAB scripts shipped with the repository.
 
-**Example (Python):**
+Available post-processing helpers include:
 
-```python
-import h5py
-import matplotlib.pyplot as plt
-with h5py.File('Results/Outputs_1.hdf5', 'r') as f:
-    u_x = f['u_x'][:]
-    plt.plot(u_x)
-    plt.title('Displacement field')
-    plt.show()
-```
-
-See the MATLAB scripts for more advanced visualizations and animations.
-
-
----
-
-This repository contains the source code used to generate the results for the paper:
-
-> Tim Hageman, *Cohesive phase-field fracture with an explicit strength surface: an eigenstrain-based return-mapping formulation*.
-
-It is provided as a **historic research snapshot** accompanying that manuscript. In other words, this repository is intended as a **reproducible archival copy of the code used in the paper**, not as an actively maintained or continuously developed software package.
-
-The code remains openly available under the MIT license so that others can inspect, reproduce, adapt, and cite the implementation.
-
-## What This Repository Contains
-
-The implementation combines:
-
-- a phase-field fracture formulation in `dolfinx` / FEniCSx,
-- an eigenstrain-based cohesive constitutive update resolved locally at quadrature points,
-- return-mapping style updates for the fracture eigenstrains, and
-- benchmark drivers corresponding to the study discussed in the manuscript.
-
-The benchmark set includes:
-
-- a plate with a hole under tension and compression,
-- a single-edge notched plate under shear, and
-- a dynamically loaded notched plate.
-
-## Main Entry Points
-
-- `Main.py`: runs a single simulation using the default parameters in `Params.py`.
-- `Params.py`: default problem definition, material properties, solver settings, and output controls.
-- `Do_Sweep.py`: reproduces all the benchmark cases, for all the parameters used within the paper. This is provided for reference, do not try to run it yourself, it takes a long while to run.
-- `Mesh/`: mesh generation, groups, plotting, outputs, and finite-element spaces.
-- `Models/`: constitutive and boundary-condition models, including the cohesive linear elastic and phase-field models.
-- `Physics/`: assembly and coupled problem definitions.
-- `Solvers/`: staggered time-stepping and linear solver handling.
-- `Utils/`: MPI and mathematical helper utilities.
+- `PostProcessAnimations.m`
+- `PlotFailSurfaces.m`
+- `distinguishable_colors.m`
 
 ## Representative Results
 
-Below are representative results from the benchmark cases discussed in the paper.
-
 ### Plate with hole under compression
 
-A unit square with a central hole (diameter 0.2 m) is loaded in compression. Due to the stress concentrations at the side of the hole, cracks nucleate and propagate along the direction of maximum shear stress at an approximate 45° angle. The fracture criterion correctly enforces a no-penetration condition, with the upper half of the domain slipping along the crack surface.
+A unit square with a central hole is loaded in compression. Stress concentrations around the hole trigger crack nucleation and growth at approximately 45 degrees, while the cohesive formulation suppresses interpenetration across the crack faces.
 
-| Vertical displacement ($u_y$, deformations ×10) | Phase-field ($\phi$) |
+| Vertical displacement ($u_y$, deformation x10) | Phase-field ($\phi$) |
 |:---:|:---:|
-| ![Compressive plate with hole – vertical displacement](DOWN_Gc100000_u_y.jpg) | ![Compressive plate with hole – phase field](DOWN_Gc100000_phasefield.jpg) |
-
-*Results obtained using $G_\text{c} = 100 \; \text{kJ/m}^2$, $\ell = 0.05 \; \text{m}$, and the default material parameters.*
+| ![Compressive plate with hole vertical displacement](DOWN_Gc100000_u_y.jpg) | ![Compressive plate with hole phase field](DOWN_Gc100000_phasefield.jpg) |
 
 ### Dynamic crack branching
 
-A notched plate (1 m × 0.5 m, initial notch length 0.25 m) is subjected to a suddenly applied traction of $\sigma_\text{ext} = 10 \; \text{MPa}$ on the top and bottom edges. At low fracture energy ($G_\text{c} = 1 \; \text{kJ/m}^2$) the crack develops short branches as it propagates, eventually splitting into two distinct cracks—a hallmark of dynamic brittle fracture. Higher values of $G_\text{c}$ progressively suppress branching and slow crack propagation.
+A single-edge notched plate under sudden traction develops branching cracks at low fracture energy. This benchmark illustrates the model's ability to capture rapid crack growth and branching in a dynamic setting.
 
 <p align="center">
-  <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching – phase field for Gc = 1 kJ/m²" width="70%"/>
+  <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching phase field" width="70%"/>
 </p>
 
-*Phase-field variable at $t = 8 \; \text{ms}$ for $G_\text{c} = 1 \; \text{kJ/m}^2$, $\ell = 0.01 \; \text{m}$, using the Drucker–Prager-like strength criterion.*
+## Scope And Maintenance
 
+This repository is best understood as a **research snapshot** accompanying the manuscript rather than as a polished end-user software package. The code is open so that others can:
+
+- verify the implementation,
+- reproduce the published studies,
+- adapt the methodology to related problems, and
+- cite the paper when the code contributes to their work.
 
 ## Citation
 
-If this repository contributes to your work, please cite the accompanying paper. Since the manuscript is currently under peer review, a conservative citation is:
+If this repository is useful in your research, please cite the accompanying paper.
 
 ```text
 Hageman, T. Cohesive phase-field fracture with an explicit strength surface:
 an eigenstrain-based return-mapping formulation. Submitted manuscript.
 ```
 
-If a final bibliographic record, DOI, or archival release is added later, please use that version instead.
+If a DOI, journal reference, or archival release is added later, please use the most up-to-date bibliographic record.
+
+## License
+
+This repository is released under the MIT License. See `LICENSE` for details.
