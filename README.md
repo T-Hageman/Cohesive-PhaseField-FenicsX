@@ -6,6 +6,7 @@ Research code accompanying the paper:
 
 > Tim Hageman, *Cohesive phase-field fracture with an explicit strength surface: an eigenstrain-based return-mapping formulation*.
 
+(currently submitted to Engineering Fracture Mechanics, pre-print: https://arxiv.org/abs/xxxx.yyyy )
 This repository provides an open implementation of a cohesive phase-field fracture model built in **FEniCSx / dolfinx**. It is intended to help researchers inspect the formulation, reproduce the benchmark studies from the manuscript, and adapt the implementation for related fracture mechanics problems.
 
 <p align="center">
@@ -16,38 +17,22 @@ This repository provides an open implementation of a cohesive phase-field fractu
 
 Top row, left to right: vertical displacement and phase-field for the plate-with-hole compression benchmark, followed by dynamic crack branching in a single-edge notched plate under sudden traction.
 
-## Why This Repository Is Useful
+## Simulation code capabilities:
 
 - Implements a cohesive phase-field fracture formulation with an **explicit strength surface**
 - Uses an **eigenstrain-based return-mapping update** at quadrature points
 - Covers both **quasi-static** and **dynamic** benchmark problems
 - Produces reproducible results for the study discussed in the paper
-- Provides a compact FEniCSx code base that is easier to inspect and extend than many large research frameworks
-
-## What Is In The Repository
-
-The code couples:
-
-- a `dolfinx` finite-element implementation of phase-field fracture,
-- cohesive constitutive updates in the solid response,
-- staggered solution of displacement and phase-field variables, and
-- benchmark drivers used to generate the representative results in the manuscript.
-
-The benchmark set includes:
-
-- a plate with a hole under tension/compression,
-- a single-edge notched plate under shear, and
-- a dynamically loaded notched plate with crack branching.
 
 ## Project Structure
 
 - `Main.py`: runs a single simulation using the default setup defined in `Params.py`
 - `Params.py`: default mesh, material, loading, solver, and output settings
-- `Do_Sweep.py`: reproduces the benchmark families used in the paper
+- `Do_Sweep.py`: reproduces the benchmark cases used in the paper
 - `Mesh/`: mesh generation, groups, FE spaces, and output utilities
 - `Models/`: constitutive models and boundary-condition models
 - `Physics/`: coupled problem definitions and assembly logic
-- `Solvers/`: time stepping and linear solver orchestration
+- `Solvers/`: time stepping and linear solvers
 - `Utils/`: MPI helpers and mathematical utilities
 - `PlotFailSurfaces.m`, `PostProcessAnimations.m`: MATLAB post-processing scripts
 
@@ -64,18 +49,15 @@ Main dependencies:
 - `numba`
 - `threadpoolctl`
 
-A conda-based setup is usually the most reliable route:
+Note that FenicsX requires a linux-based system, even when installing through Anaconda. If using windows, use WSL. A conda-based setup is usually the most reliable route:
 
 ```bash
-conda create -n fenicsx-cohesive python=3.10
+conda create -n fenicsx-cohesive python=3.12
 conda activate fenicsx-cohesive
 conda install -c conda-forge fenics-dolfinx petsc4py mpi4py gmsh numba threadpoolctl
 ```
 
 If you already have a working FEniCSx + MPI installation, installing the missing Python packages into that environment is also fine.
-
-For general FEniCSx installation guidance, see the official documentation:
-<https://docs.fenicsproject.org/dolfinx/main/python/installation.html>
 
 ## Quick Start
 
@@ -99,31 +81,16 @@ export OMP_NUM_THREADS=1
 python3 Do_Sweep.py
 ```
 
-This script is primarily provided for reproducibility. It can be computationally expensive, especially for the dynamic cases and parameter sweeps.
+This script is primarily provided for reproducibility. As it is currently set-up, it runs ALL the cases contained within the paper (including mesh refinement studies, parameter sweeps, etc.). This takes a very, very long time, and it is recommended to edit Params.py instead to the parameters/cases of interest to just run that single case.
 
 ## Output And Visualisation
 
-Simulation outputs are written to `Results/`, typically as `Outputs_*.hdf5` files. You can inspect them using your own Python workflow or the MATLAB scripts shipped with the repository.
+Simulation results are plotted during the simulation, and simulation outputs are written to `Results/`, typically as `Outputs_*.hdf5` files. 
 
-Available post-processing helpers include:
-
+For an example of post-processing, see:
 - `PostProcessAnimations.m`
-- `PlotFailSurfaces.m`
-- `distinguishable_colors.m`
 
-A minimal Python example:
 
-```python
-import h5py
-import matplotlib.pyplot as plt
-
-with h5py.File("Results/Outputs_1.hdf5", "r") as f:
-    u_x = f["u_x"][:]
-
-plt.plot(u_x)
-plt.title("Displacement field")
-plt.show()
-```
 
 ## Representative Results
 
@@ -137,7 +104,7 @@ A unit square with a central hole is loaded in compression. Stress concentration
 
 ### Dynamic crack branching
 
-A single-edge notched plate under sudden traction develops branching cracks at low fracture energy. This benchmark illustrates the model's ability to capture rapid crack growth and branching in a dynamic setting.
+A single-edge notched plate under sudden normal stress develops branching cracks at low fracture energy. This benchmark illustrates the model's ability to capture rapid crack growth and branching in a dynamic setting.
 
 <p align="center">
   <img src="Dynamic_Gc1000_phasefield.jpg" alt="Dynamic crack branching phase field" width="70%"/>

@@ -23,6 +23,10 @@ t_start = time.time()
 # Get Default Parameters
 params = Params()
 
+# Larger elements for quick example run
+params.Materials["Iron"]["ell"] = 2.0*params.Materials["Iron"]["ell"]
+params.dx = 2.0*params.dx 
+
 # Generate Mesh
 mesh = Mesh(params)
 mesh.plot_mesh()
