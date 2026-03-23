@@ -40,21 +40,20 @@ Top row, left to right: vertical displacement and phase-field for the plate-with
 
 This project requires Python 3.10+ together with an MPI-enabled FEniCSx environment.
 
-Main dependencies:
+The recommended setup is to create the same Conda environment used for these runs from [`environment.yml`](environment.yml):
 
-- `dolfinx`
-- `petsc4py`
-- `mpi4py`
-- `gmsh`
-- `numba`
-- `threadpoolctl`
+```bash
+conda env create -f environment.yml
+conda activate fenicsx-cohesive
+```
 
-Note that FenicsX requires a linux-based system, even when installing through Anaconda. If using windows, use WSL. A conda-based setup is usually the most reliable route:
+If you prefer to build the environment manually, a Conda-based setup via `conda-forge` is the most reliable route:
 
 ```bash
 conda create -n fenicsx-cohesive python=3.12
 conda activate fenicsx-cohesive
-conda install -c conda-forge fenics-dolfinx petsc4py mpi4py gmsh numba threadpoolctl
+conda install -c conda-forge fenics-dolfinx mpi4py petsc4py h5py matplotlib-base numba numpy pyvista pip
+pip install gmsh shapely threadpoolctl
 ```
 
 If you already have a working FEniCSx + MPI installation, installing the missing Python packages into that environment is also fine.
