@@ -64,10 +64,10 @@ Run the default simulation:
 
 ```bash
 export OMP_NUM_THREADS=1
-mpirun -np 50 python3 Main.py
+mpirun -np 8 python3 Main.py
 ```
 
-The default case is a **plate with a hole** using parameters from `Params.py`. Results are written to `Results/` in HDF5 format.
+The default case is a **plate with a hole** using parameters from `Params.py`. Results are written to `Results/` in HDF5 format. (The published runs in the paper were performed with `-np 50`).
 
 To explore a different setup, edit `Params.py` and rerun `Main.py`.
 
