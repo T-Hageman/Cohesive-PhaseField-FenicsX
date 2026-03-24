@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the repository and the accompanying preprint."
+title: "Cohesive Phase-Field Fracture in FEniCSx"
+type: software
+authors:
+  - given-names: "Tim"
+    family-names: "Hageman"
+repository-code: "https://github.com/T-Hageman/Cohesive-PhaseField-FenicsX"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Cohesive phase-field fracture with an explicit strength surface: an eigenstrain-based return-mapping formulation"
+  authors:
+    - given-names: "Tim"
+      family-names: "Hageman"
+  year: 2026
+  journal: "arXiv"
+  archive: "arXiv"
+  archive-location: "2603.21811"
+  url: "https://arxiv.org/abs/2603.21811"

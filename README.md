@@ -6,7 +6,7 @@ Research code accompanying the paper:
 
 > Tim Hageman, *Cohesive phase-field fracture with an explicit strength surface: an eigenstrain-based return-mapping formulation*.
 
-(currently submitted to Engineering Fracture Mechanics, pre-print: https://arxiv.org/abs/xxxx.yyyy )
+(currently submitted to Engineering Fracture Mechanics, pre-print: https://arxiv.org/abs/2603.21811 )
 This repository provides an open implementation of a cohesive phase-field fracture model built in **FEniCSx / dolfinx**. It is intended to help researchers inspect the formulation, reproduce the benchmark studies from the manuscript, and adapt the implementation for related fracture mechanics problems.
 
 <p align="center">
@@ -124,7 +124,7 @@ If this repository is useful in your research, please cite the accompanying pape
 
 ```text
 Hageman, T. Cohesive phase-field fracture with an explicit strength surface:
-an eigenstrain-based return-mapping formulation. Submitted manuscript.
+an eigenstrain-based return-mapping formulation. Submitted manuscript (  https://arxiv.org/abs/2603.21811 ).
 ```
 
 If a DOI, journal reference, or archival release is added later, please use the most up-to-date bibliographic record.
